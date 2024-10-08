@@ -1,0 +1,73 @@
+This is BibTeX, Version 0.99d (TeX Live 2021/W32TeX)
+Capacity: max_strings=200000, hash_size=200000, hash_prime=170003
+The top-level auxiliary file: thesis.aux
+The style file: bstutf8.bst
+Reallocated singl_function (elt_size=4) to 100 items from 50.
+Reallocated wiz_functions (elt_size=4) to 6000 items from 3000.
+Database file #1: ref/refs.bib
+-- BUPTThesis.bst version 1.0 Beta 1 (2009/05/31) by Yu Zhang.
+-- http://code.google.com/p/buptthesis/
+-- See the "userguide.pdf" manual for usage information.
+Warning--The editor in Shotton08CVPR is missing.
+Warning--empty editor in Shotton08CVPR
+Warning--The editor in Scharwächter15IVS is missing.
+Warning--empty editor in Scharwächter15IVS
+Warning--The editor in Cadena14ICRA is missing.
+Warning--empty editor in Cadena14ICRA
+Warning--The refdate in Hinton06Science is missing.
+Warning--The editor in Long15CVPR is missing.
+Warning--empty editor in Long15CVPR
+Warning--empty pages in Long15CVPR
+Warning--The editor in Gupta14ECCV is missing.
+Warning--empty editor in Gupta14ECCV
+Warning--empty editor in clzs
+Warning--empty booktitle in clzs
+Warning--there's a publisher but no address in clzs
+Warning--The editor in DPMG is missing.
+Warning--empty editor in DPMG
+Warning--empty pages in DPMG
+Warning--there's neither address nor publisher in NPB2
+
+Done.
+You've used 26 entries,
+            4554 wiz_defined-function locations,
+            1190 strings with 12176 characters,
+and the built_in function-call counts, 15882 in all, are:
+= -- 1761
+> -- 249
+< -- 20
++ -- 142
+- -- 90
+* -- 1320
+:= -- 1780
+add.period$ -- 98
+call.type$ -- 26
+change.case$ -- 1
+chr.to.int$ -- 12
+cite$ -- 45
+duplicate$ -- 1103
+empty$ -- 1705
+format.name$ -- 73
+if$ -- 3848
+int.to.chr$ -- 0
+int.to.str$ -- 26
+missing$ -- 2
+newline$ -- 154
+num.names$ -- 30
+pop$ -- 103
+preamble$ -- 1
+purify$ -- 0
+quote$ -- 2
+skip$ -- 390
+stack$ -- 0
+substring$ -- 1910
+swap$ -- 309
+text.length$ -- 33
+text.prefix$ -- 0
+top$ -- 5
+type$ -- 230
+warning$ -- 19
+while$ -- 142
+width$ -- 28
+write$ -- 225
+(There were 19 warnings)

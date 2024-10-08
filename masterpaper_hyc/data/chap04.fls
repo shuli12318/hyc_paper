@@ -1,0 +1,6 @@
+PWD C:/Users/hnu_h/Desktop/githubÄ£°å/nudt_thesis-master/data
+INPUT c:/texlive/2021/texmf.cnf
+INPUT c:/texlive/2021/texmf-dist/web2c/texmf.cnf
+INPUT c:/texlive/2021/texmf-var/web2c/xetex/xelatex.fmt
+INPUT chap04.tex
+OUTPUT chap04.log

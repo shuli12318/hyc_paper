@@ -1,0 +1,14 @@
+# Fdb version 3
+["xdvipdfmx"] 0 "chap04.xdv" "chap04.pdf" "chap04" 0
+  "chap04.xdv" 0 -1 0 "xelatex"
+  (generated)
+  "chap04.pdf"
+["xelatex"] 1719825406 "chap04.tex" "chap04.xdv" "chap04" 1719825406
+  "c:/texlive/2021/texmf-dist/web2c/texmf.cnf" 1713883162 39972 3d6bb4d9d719e93193fa020b58adf5d4 ""
+  "c:/texlive/2021/texmf-var/web2c/xetex/xelatex.fmt" 1713884779 5093727 1ca041ea0b9e7b9f0de187af98f1639b ""
+  "c:/texlive/2021/texmf.cnf" 1713884595 713 e69b156964470283e0530f5060668171 ""
+  "chap04.aux" 1719825406 9 a94a2480d3289e625eea47cd1b285758 ""
+  "chap04.tex" 1719825056 2254 768013e4c0d0c6f5d43dc04eec657a46 ""
+  (generated)
+  "chap04.log"
+  "chap04.xdv"

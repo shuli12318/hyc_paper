@@ -1,0 +1,127 @@
+%1. 规范硕士导言
+% \documentclass[master,ttf]{nudtpaper}
+
+%2. 规范博士导言
+% \documentclass[doctor,twoside,ttf]{nudtpaper}
+
+%3. 建议使用OTF字体获得较好的页面显示效果
+%   OTF字体从网上获得，各个系统名称统一。
+
+%4. 如果想生成盲评，传递anon即可，仍需修改个人成果部分
+% \documentclass[master,otf,anon]{nudtpaper}
+
+\documentclass[master,ttf,twoside]{nudtpaper}
+\usepackage{mynudt}
+\usepackage{multirow,array,makecell}
+
+
+\usepackage{graphicx}  % 用于插入图像
+\usepackage{subfig}     % 用于子图
+% 或者使用 subcaption 包
+%\usepackage{subcaption} % 另一个可选的子图包
+
+
+
+\usepackage{algorithm}
+\usepackage{algorithmic}
+
+
+%中文封面
+\classification{TP242.6}
+\serialno{21053048}
+\confidentiality{公开}
+\UDC{681.5}
+\papertype{工学}
+\title{面向地铁排爆环境的\\救援机器人RGB-D语义分割方法研究}
+\displaytitle{面向地铁排爆环境的救援机器人RGB-D语义分割方法研究} %
+\author{郝以慈}
+\subject{控制科学与工程}
+\researchfield{智能机器人技术}
+\supervisor{周宗潭\quad{}教授}
+\cosupervisor{XXX\quad{}讲师}  % 协助指导教师，没有就空着
+\zhdate{\zhtoday}
+
+%英文封面
+\entitle{RGB-D Semantic Segmentation for Rescue Robots in Explosive Ordnance Disposal Environments}
+\enauthor{Yici Hao}
+\ensupervisor{Prof. Zongtan Zhou}
+\encosupervisor{Lec. Jingsheng Tang} % 协助指导教师英文，没有就空着
+\ensubject{Control Science and Engineering}
+\enpapertype{Engineering}
+\endate{\entoday}
+% 加入makenomenclature命令可用nomencl制作符号列表。
+
+
+
+
+
+
+
+
+
+% 论文主体
+\begin{document}
+\graphicspath{{figures/}} % 图片路径
+\maketitle       % 生产封面
+
+% 前言
+\frontmatter
+\tableofcontents % 生成文目录
+\listoftables    % 生成表目录
+\listoffigures   % 生成图目录
+
+% 摘要
+\midmatter
+\input{data/abstract}   % 生成摘要
+\input{data/denotation} % 生产符号目录
+
+% 正文计数设置
+\mainmatter
+\renewcommand\UrlFont{\timesnr} % 定义URL字体
+\makeatletter                   % 使用@符号，跟自动计数有关，不需要管
+\newcounter{blankpages}         % 页面计数器
+\def\cleardoublepage{           % 保证章节从奇数页开始
+	\clearpage
+	\if@twoside
+	\ifodd\c@page
+	\else
+	\hbox{}\newpage\stepcounter{blankpages}%
+	\thispagestyle{empty}%
+	\if@twocolumn\hbox{}\newpage\fi
+	\fi
+	\fi
+}
+\newcommand{\@romannoblank}[1]{  % 用于生成不包含空白页的罗马数字
+	\@roman{\numexpr#1-\value{blankpages}\relax}%
+}
+\makeatother                     % 使用@符号，跟自动计数有关，不需要管
+
+% 正文
+\input{data/chap01}              
+\input{data/chap02}
+\input{data/chap03}
+\input{data/chap04}
+\input{data/chap05}
+
+% 致谢
+\input{data/ack}                 
+\cleardoublepage                 % 保证章节从奇数页开始
+\phantomsection                  % 创建虚拟节以便添加目录条目时正确定位
+
+% 文献
+\addcontentsline{toc}{chapter}{参考文献} % 添加文献作为一个章节
+\bibliographystyle{bstutf8}             % 定义文献样式
+\bibliography{ref/refs}                 % 文献数据库
+
+% 成果
+\input{data/resume}             
+
+% 明评
+\input{data/reviewinfo}        
+ 
+% 附录
+\appendix                        
+\backmatter              % 应用backmatter样式
+\input{data/appendix01}
+
+\end{document}
