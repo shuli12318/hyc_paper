@@ -186,7 +186,7 @@ $\mathbb{P}_B \in R^{1 \times 1 \times C_{in}}$，$\mathbb{P}_S \in R^{K_h \time
 $\textbf{K}_\textbf{BS}$与等式\ref{eq:conv}中的$\mathbb{K}$共享相同的张量大小，因此，我们的ShapeConv实际上与\ref{fig:ShapeConv}(a)中的香草卷积层相同。换句话说，当用ShapeConv代替香草卷积时，不会引入额外的推理时间。
 
 
-\subsection{特征交换机制}
+%\subsection{特征交换机制}
 如引言中所讨论的，深度多模态融合方法主要可以分为基于聚合的融合和基于融合的融合[4]。
 由于模态内处理的弱点，最近的基于聚合的工作执行特征融合，同时仍然保持所有模态的子网络[12，30]。
 此外，[19]指出，熔合的性能受到选择熔合哪一层的高度影响。
@@ -234,15 +234,111 @@ Vision Transformers的基本融合
 
 
 
+翻译到这里 懂？
+1这是第三章节 懂？1
+还有什么问题？我试试不动了喊你1
+\subsection{Vision Transformer 的基本融合}
+\label{subsec:intuitive_fusion}
+假设我们有第$i$个输入数据$\bm{x}^{(i)}$它包含$M$个模态： $\bm{x}^{(i)}=\{\bm{x}_m^{(i)}\in\mathbb{R}^{N\times C}\}_{m=1}^M$，其中，$N$ 和$C$分别表示令牌和输入通道的数量。 
+为了简单起见，我们将在接下来的部分中省略下标$^{(i)}$ 。
+深度多模态融合的目标是确定一个多层模型 $f(\bm{x})$，期望其输出尽可能接近目标 $\bm{y}$ 。 
+具体来说，在这项工作中，$f(\bm{x})$是近似基于transformerbased的网络架构。假设模型总共包含$L$层， 我们表示第$l$层($l=1,\ldots,L$)为$\bm{e}^l=\{\bm{e}^l_m\in\mathbb{R}^{N\times C'}\}_{m=1}^M$, 其中$C'$表示范围内的层的特征通道的数量。
+最初，使用$\bm{x}_m$的线性投影来获得$\bm{e}_m^1$，这是一种广泛采用的对输入标记(\emph{例如}，图像块)进行矢量化的方法，使得第一Transformer层可以接受标记作为输入。
+
+我们对输入模态使用不同的变换器，并将$f_m(\bm{x})=\bm{e}_m^{L+1}$表示为第$m$个Transformer的最终预测。
+给定第$m$个模态的令牌特征$\bm{e}_m^{l}$，第$l$层计算
+\begin{equation}
+	\label{eq:token-feature}
+	\hat{\bm{e}}_m^l=\text{MSA}\big(\text{LN}(\bm{e}_m^{l})\big),\; \bm{e}_m^{l+1}=\text{MLP}\big(\text{LN}(\hat{\bm{e}}_m^l)\big),
+\end{equation}
+其中$\text{MSA}$， $\text{MLP}$，和 $\text{LN}$表示多头自注意、多层感知和层归一化，
+$\hat{\bm{e}}^l_m$ 代表MSA的输出。 
+
+在视觉任务的多模态融合过程中，不同模态的对齐关系可以显式地可用。例如，像素位置通常用于确定图像深度相关性;并且相机内函数/外函数在将3D点投影到图像中时很重要。基于对齐信息的参与，我们考虑了以下两种Transformer融合方法。
+
+对齐不可知融合不明确使用模态之间的对齐关系。该算法期望从大量的数据中隐式地学习到对齐。对齐不可知融合的一种常用方法是直接拼接多模态输入标记，广泛应用于视觉语言模型。类似地，用于第$l$层的输入特征$\bm{e}_l$也是不同模态的令牌式级联。尽管对准不可知的融合是简单的并且可以对原始Transformer模型具有最小的修改，但是很难直接受益于已知的多模态对准关系。
+
+\label{sec:对齐感知融合}明确地利用模态间对齐。例如，这可以通过选择对应于相同像素或3D坐标的标记来实现。假设$\bm{x}_m[n]$是第$m$个模态输入$\bm{x}_m$的第$n$个令牌，其中$n=1,\cdots,N_m$。我们将从第$m$个模态到第$m'$个模态的“标记投影”定义为：
+\begin{equation}
+	\label{eq:token-projection}
+	\mathrm{Proj}^\text{T}_{m'}(\bm{x}_{m}[n_{m}])=h(\bm{x}_{m'}[n_{m'}]),
+\end{equation}
+其中$h$可以简单地是身份函数（对于同质模态）或浅多层感知（对于异质模态）。当考虑整个$N$个token时，我们可以方便地将“模态投影”定义为token投影的串联：
+projections:\vskip-0.2in
+\begin{equation}
+	\label{eq:modality-projection}
+	{\mathrm{Proj}}^\text{M}_{m'}(\bm{x}_{m})=\big[\mathrm{Proj}^\text{T}_{m'}(\bm{x}_{m}[1]); \cdots; \mathrm{Proj}^\text{T}_{m'}(\bm{x}_{m}[N])\big].
+\end{equation}
+
+\ref{eq:modality-projection} 仅示出了输入侧的融合策略。我们还可以通过投影和聚合特征嵌入$\bm{e}_m$，在不同模态特定模型之间执行中间层或多层融合，这可能实现更多样化和更精确的特征交互。
+然而，随着基于变换器的模型的复杂性的增长，搜索仅用于两种模态 (\emph{例如} 2D和3D检测变换器）的最佳融合策略(\emph{例如} 应用投影和聚集的层和标记）可能会增长为极难解决的问题。 
+为了解决这一问题， 我们在第2.3节中提出了多模式令牌融合 \ref{subsec:mix_transformers}.
 
 
 
+\subsection{多模式令牌融合}
+\label{subsec:mix_transformers}
 
 
 
+正如 \ref{sec:intro}描述的, 多模态令牌融合 (TokenFusion) 首先修剪单模态变换器，并进一步重新利用修剪后的单元进行融合。通过这种方式，原始的单模态变压器的信息单元被假定为在很大程度上被保留，而多模态的相互作用可以被涉及以提高性能。
+
+如之前在\cite{DBLP:journals/corr/abs-2106-02034}中所示，视觉变换器的标记可以在保持性能的同时以分层方式被修剪。类似地，我们可以通过采用评分函数$s^l(\bm{e}^{l})=\text{MLP}(\bm{e}^{l})\in[0,1]^N$来选择较少信息的标记， 该评分函数动态地预测第$l$层和第$m$模态的标记的重要性。
+为了在$s^l(\bm{e}^{l})$上实现反向传播，我们重新公式化方程中的MSA输出$\hat{\bm{e}}_m^l$ in \ref{eq:token-feature} as 
+\begin{equation}
+	\label{eq:msa-output-score}
+	\hat{\bm{e}}_m^l=\text{MSA}\big(\text{LN}(\bm{e}_m^{l})\cdot s^l(\bm{e}_m^{l})\big).
+\end{equation}
+
+我们使用$\mathcal{L}_m$来表示第$m$个模态的任务特定损失。为了修剪无信息的标记，我们进一步在$s^l(\bm{e}_m^{l})$上添加标记式修剪损失（$l_1$-norm）。因此，用于优化的总损失函数被导出为：
+\vskip-0.1in
+\begin{equation}
+	\label{eq:overall-loss}
+	\mathcal{L}=\sum_{m=1}^M\Big(\mathcal{L}_m+\lambda\sum_{l=1}^L\big|s^l(\bm{e}_m^{l})\big|\Big),
+\end{equation}
+其中$\lambda$ 是用于平衡不同损耗的超参数。
+
+对于特征$\bm{e}_m^l\in\mathbb{R}^{N\times C'}$，令牌式剪枝从所有$N$个令牌中动态检测不重要的令牌。改变不重要的标记或用其他嵌入替换它们，预计对其他信息标记的影响有限。
+因此，我们提出了一种用于多模态变换器的标记融合过程，因此，我们为多模态变换器提出了一种标记融合程序，用其他模态的标记投影（定义见第 \ref{sec:alignment-aware-fusion}节）替代不重要的标记。
+由于修剪过程是动态的，{\emph{i.e.}}，即，在输入特征的条件下，融合过程也是动态的。该过程在每个Transformer层之前执行令牌替换，因此第$l$层的输入特征，\emph{i.e.}，$\bm{e}_m^l$，被重新表述为\vskip-0.2in
+\begin{align}
+	\label{eq:mix-process}
+	\bm{e}_m^l&=\bm{e}_m^l\odot\mathbb{I}_{s^l(\bm{e}_m^{l})\ge\theta}
+	+{\mathrm{Proj}}^\text{M}_{m'}(\bm{e}_m^l)\odot\mathbb{I}_{s^l(\bm{e}_m^{l})<\theta},
+\end{align}
+其中$\mathbb{I}$是一个断言下标条件的指示符，因此它输出一个掩码张量$\in\{0,1\}^N$；参数$\theta$是一个小阈值（我们在实验中采用$10^{-2}$）;运算符$\odot$ 表示逐元素乘法。
+
+In \ref{eq:mix-process}, 如果只有两个模态作为输入，则$m'$将仅仅是除$m$之外的另一模态。对于两个以上的模态，我们将标记预先分配为$M-1$个部分，每个部分都与其他模态中的一个绑定，而不是与它绑定。此预分配的更多细节将在\ref{subsec:homogeneous-modalities}. 
+
+
+\subsection{剩余位置对准} 
+\label{subsec:rpa}
+直接替换代币将冒着完全破坏其原始位置信息的风险。
+因此，模型仍然可以忽略来自另一模态的投影特征的对齐。
+为了缓解这个问题，我们采用了残余位置对齐（RPA），利用位置嵌入（PE）的多模式对齐。
+图\ref{pic:framework} and 图\ref{pic:framework-hete} 所示。
+稍后将详细介绍，RPA 的关键理念在于向后续层注入等效 PE。
+此外，PE的反向传播在第一层之后停止，这意味着在整个训练过程中，仅保留第一层处的PE的梯度，而对于其余的层则冻结。以这种方式，PE服务于对齐多模态令牌的目的，而不管原始令牌的替换状态。总之，即使替换了标记，我们仍然保留从另一个模态添加到投影特征的原始PE。 
 
 
 
+\begin{figure}[t!]
+	\centering
+	\hskip0.07in
+	\includegraphics[scale=0.42]{figures/mixt-ho.pdf}
+	\caption[]{以RGB和深度为例，介绍了一种用于同质模态的TokenFusion框架。这两种模态都被发送到共享的Transformer，其中还具有共享的位置嵌入。}
+	\label{pic:framework}
+	\vskip-0.1in
+\end{figure}
+
+\begin{figure*}[t!]
+	\centering
+	\includegraphics[scale=0.42]{figures/mixt-he.pdf}
+	\caption[]{用于点云和图像的异构模态的TokenFusion框架。两种模态都被发送到具有单独位置嵌入的单独Transformer模块。需要额外的模态间投影（Proj），这与同质模态的融合不同
+	}
+	\label{pic:framework-hete}
+	\vskip-0.1in
+\end{figure*}
 
 
 
